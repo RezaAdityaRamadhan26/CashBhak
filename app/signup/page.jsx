@@ -1,5 +1,4 @@
 import { GalleryVerticalEnd } from "lucide-react"
-
 import { SignupForm } from "@/components/signup-form"
 
 export default function SignupPage() {
@@ -24,7 +23,7 @@ export default function SignupPage() {
           © 2025 AgungKasir. All Rights Reserved.
         </p>
       </div>
-      <div className="bg-[#27C8AD] flex flex-col justify-center items-center">
+      <div className="bg-[var(--primary-custom)] flex flex-col justify-center items-center">
         <div className="text-left ">
         <h1 className="text-3xl font-bold text-white">Manage Your Sales Easily With us.</h1>
         <h3 className="text-lg text-white ">Continue To manage your business on nama</h3>
