@@ -39,7 +39,7 @@ export function LoginForm({
         <Field>
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
-            <a href="#" className="underline underline-offset-4 text-blue-400">
+            <a href="/signup" className="underline underline-offset-4 text-blue-400">
               Sign up
             </a>
           </FieldDescription>
