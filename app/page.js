@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button, Text} from "@/components/ui/button";
 
 export default function LandingPage () {
   return (
@@ -7,8 +7,9 @@ export default function LandingPage () {
       <header className="bg-white shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <div>
-              <Image src="./images/logo.png" alt="Logo" width={100} height={100} />
+            <div className="flex items-center gap-4">
+              <Image src="/images/logo.png" alt="Logo" width={50} height={50} className="flex" />
+              <div className="font-bold ml-3">CashBhak</div>
             </div>
       <nav className="hidden md:flex gap-6 text-sm items-center text-slate-700">
         <a className="hover:underline">Home</a>
