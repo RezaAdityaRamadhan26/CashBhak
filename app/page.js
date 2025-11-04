@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 export default function LandingPage () {
   return (
     <main className="min-h-screen bg-[#f3f5f5] text-slate-900">
+      {/* Navbar */}
       <header className="bg-white shadow-sm relative">
         <div className="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between relative">
 
@@ -28,6 +29,14 @@ export default function LandingPage () {
 
         </div>
       </header>
-    </main>
+
+    {/* Hero Section */}
+<section class="w-full flex flex-col">    
+      <img src="/images/hero.png" alt="Modern Shoes"class="w-screen h-[500px] object-cover absolute"/>
+      <div>
+        <h1 class="font-bold text-4xl md:text-6xl leading-tight mb-6" style={{fontFamily:"var(--font-poppins)"}}>eki</h1>
+      </div>
+  </section>
+</main>
   );
 }
