@@ -7,7 +7,7 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-[var(--gray-custom)] text-[var(--black-custom)]">
       {/* Navbar */}
-      <header className="bg-[var(--light-custom)] shadow-sm relative">
+      <header className="bg-[var(--light-custom)] shadow-sm fixed w-full bg-white z-100">
         <div className="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between relative">
           <div className="flex items-center gap-4">
             <Image src="/images/logo.png" alt="Logo" width={50} height={50} />
