@@ -5,19 +5,19 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-[var(--gray-custom)] text-[var(--black-custom)]">
+    <main className="min-h-screen pt-16 bg-[var(--gray-custom)] text-[var(--black-custom)]">
       {/* Navbar */}
-      <header className="bg-[var(--light-custom)] shadow-sm relative">
-        <div className="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between relative">
-          <div className="flex items-center gap-4">
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-[var(--light-custom)]/95 backdrop-blur-sm shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-2 flex items-center justify-between relative" style={{height: "4rem"}}>
+          <div className="flex items-center gap-4 hover:cursor-pointer">
             <Image src="/images/logo.png" alt="Logo" width={50} height={50} />
             <div className="font-bold text-xl" style={{ fontFamily: "var(--font-poppins)" }}>CashBhak</div>
           </div>
           <nav className="hidden md:flex gap-4 text-sm font-medium absolute left-1/2 -translate-x-1/2">
-            <a className="hover:underline font-normal text-base" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>Home</a>
-            <a className="hover:underline font-normal text-base" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>Features</a>
-            <a className="hover:underline font-normal text-base" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>About</a>
-            <a className="hover:underline font-normal text-base" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>Contact</a>
+            <a className="hover:opacity-70 cursor-pointer" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>Home</a>
+            <a className="hover:opacity-70 cursor-pointer" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>Features</a>
+            <a className="hover:opacity-70 cursor-pointer" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>About</a>
+            <a className="hover:opacity-70 cursor-pointer" style={{ fontFamily: "var(--font-poppins)", color: "var(--black-custom)" }}>Contact</a>
           </nav>
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-md font-normal" style={{ fontFamily: "var(--font-poppins)", color: "var(--primary-custom)" }}>Sign In</Link>

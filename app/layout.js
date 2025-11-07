@@ -22,6 +22,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${inter.variable} ${poppins.variable} antialiased font-sans`}
+        style={{ background: "var(--gray-custom)" }}
       >
         {children}
       </body>
