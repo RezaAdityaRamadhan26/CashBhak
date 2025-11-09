@@ -33,14 +33,14 @@ export function SignupForm({
         </Field>
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input id="password" type="password" name="password" required />
+          <Input id="password" type="password" name="password1" required />
           <FieldDescription>
             Must be at least 8 characters long.
           </FieldDescription>
         </Field>
         <Field>
           <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
-          <Input id="confirm-password" type="password" required />
+          <Input id="confirm-password" type="password" name="password2" required />
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field>
         <Field>
