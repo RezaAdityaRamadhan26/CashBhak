@@ -32,7 +32,7 @@ export function LoginForm   ({
         }
 
         alert('Success!')
-        redirect("/dashboard")
+        redirect("/ceklogin")
     }
     
   return (
@@ -54,11 +54,9 @@ export function LoginForm   ({
           </div>
           <Input id="password" type="password" name="password" required />
         </Field>
-        <Link href="/dashboard" className="text-sm text-blue-400 underline underline-offset-4">
         <Field>
           <Button type="submit" className='bg-[var(--primary-custom)]'>Login</Button>
         </Field>
-        </Link>
 
         <Field>
           <FieldDescription className="text-center">
