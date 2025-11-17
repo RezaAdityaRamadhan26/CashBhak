@@ -1,129 +1,152 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
 import {
   DollarSign,
   ClipboardList,
   Package,
   Calendar,
   Download,
+  Loader2,
 } from "lucide-react";
 import { fetchTransactionsForDashboard } from "@/lib/action";
 
-const monthlySalesData = [
-  { month: "Jan", height: "h-0" },
-  { month: "Feb", height: "h-0" },
-  { month: "Mar", height: "h-20" },
-  { month: "Apr", height: "h-0" },
-  { month: "May", height: "h-36" },
-  { month: "Jun", height: "h-0" },
-  { month: "Jul", height: "h-48" },
-  { month: "Aug", height: "h-0" },
-  { month: "Sep", height: "h-0" },
-  { month: "Oct", height: "h-0" },
-];
-
-const StatCard = ({ title, value, percentage, icon, iconBg }) => (
+// --- 1. KOMPONEN STAT CARD ---
+const StatCard = ({ title, value, icon, iconBg }) => (
   <div className="bg-white p-5 rounded-xl shadow-sm flex items-center justify-between">
     <div>
       <div className="text-sm text-gray-500">{title}</div>
       <div className="text-2xl font-bold text-[var(--black-custom)]">
         {value}
       </div>
-      <div
-        className={`text-xs mt-1 ${
-          percentage > 0 ? "text-green-500" : "text-red-500"
-        }`}
-      >
-        {percentage > 0 ? `▲ ${percentage}%` : `▼ ${percentage}%`}
-      </div>
     </div>
     <div className={`p-3 rounded-full ${iconBg}`}>{icon}</div>
   </div>
 );
 
-const MonthlySalesChart = () => (
-  <div className="bg-white p-5 rounded-xl shadow-sm h-full">
-    <h3 className="text-lg font-semibold text-[var(--black-custom)] mb-1">
-      Monthly Sales
-    </h3>
-    <div className="flex items-end justify-between h-64 mt-4 px-2">
-      {monthlySalesData.map((d) => (
-        <div key={d.month} className="flex flex-col items-center gap-2 w-8">
-          <div
-            className={`w-full bg-[var(--primary-custom)]/20 rounded-t-lg ${d.height} transition-all`}
-          ></div>
-          <span className="text-xs text-gray-500">{d.month}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
+// --- 2. KOMPONEN MONTHLY SALES CHART (PERBAIKAN CSS) ---
+const MonthlySalesChart = ({ data }) => {
+  const maxValue = Math.max(...data.map((d) => d.total), 1);
 
-const SalesSourceChart = () => (
-  <div className="bg-white p-5 rounded-xl shadow-sm">
-    <div className="flex justify-between items-center mb-2">
-      <div>
+  return (
+    <div className="bg-white p-5 rounded-xl shadow-sm h-full flex flex-col">
+      <h3 className="text-lg font-semibold text-[var(--black-custom)] mb-6">
+        Monthly Sales (Tahun Terfilter)
+      </h3>
+      {/* Hapus 'items-end' di sini, biarkan anak elemen mengatur tingginya */}
+      <div className="flex justify-between flex-1 px-2 gap-2 h-64">
+        {data.map((d) => {
+          const heightPercent = (d.total / maxValue) * 100;
+
+          return (
+            // PERBAIKAN DI SINI: 
+            // - h-full: Agar container memenuhi tinggi chart
+            // - justify-end: Agar bar turun ke bawah (seperti grafik batang pada umumnya)
+            <div key={d.month} className="flex flex-col items-center justify-end gap-2 w-full h-full group relative">
+
+              {/* Tooltip */}
+              <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 text-xs bg-gray-800 text-white px-2 py-1 rounded transition-opacity pointer-events-none whitespace-nowrap z-10">
+                Rp {(d.total / 1000).toFixed(0)}k
+              </div>
+
+              {/* Bar Batang */}
+              {/* Tinggi bar akan dihitung relatif terhadap 'h-full' parent-nya */}
+              <div
+                className="w-full max-w-[30px] bg-[#D1F2EB] rounded-t-lg transition-all duration-500 hover:bg-[var(--primary-custom)]/40"
+                style={{ height: `${heightPercent}%` }}
+              ></div>
+
+              {/* Label Bulan */}
+              <span className="text-xs text-gray-400">{d.month}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// --- 3. KOMPONEN PIE CHART ---
+const SalesSourceChart = ({ data, totalAmount }) => {
+  const cashEnd = data.cash;
+  const bankEnd = cashEnd + data.bank;
+
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
+
+  return (
+    <div className="bg-white p-5 rounded-xl shadow-sm h-full flex flex-col justify-between">
+      <div className="mb-4">
         <h3 className="text-lg font-semibold text-[var(--black-custom)]">
-          Origin of sales transactions
+          Origin of sales
         </h3>
-        <span className="text-xs text-gray-500">12 Jun - 21 Sep 2025</span>
+        <span className="text-xs text-gray-400">Based on filtered date</span>
       </div>
-      <span className="text-sm font-semibold text-red-500">▼ 1.2%</span>
-    </div>
-    <div className="text-3xl font-bold text-[var(--black-custom)] mb-4">
-      Rp. 3.210.000
-    </div>
-    <div className="flex items-center gap-6">
-      <div className="relative w-36 h-36">
-        <div
-          className="absolute inset-0 rounded-full bg-yellow-400"
-          style={{
-            clipPath: "polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 50%)",
-          }}
-        ></div>
-        <div
-          className="absolute inset-0 rounded-full bg-[var(--blue-custom)]"
-          style={{ clipPath: "polygon(0% 100%, 50% 100%, 50% 50%, 0% 50%)" }}
-        ></div>
-        <div
-          className="absolute inset-0 rounded-full bg-[var(--red-custom)]"
-          style={{ clipPath: "polygon(0% 0%, 50% 0%, 50% 50%, 0% 50%)" }}
-        ></div>
-        <div className="absolute inset-2.5 rounded-full bg-white"></div>
-      </div>
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-[var(--red-custom)]"></span>
-            <span className="text-sm text-gray-500">Cash</span>
-          </div>
-          <span className="text-sm font-semibold text-[var(--black-custom)]">
-            60%
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-[var(--blue-custom)]"></span>
-            <span className="text-sm text-gray-500">Bank</span>
-          </div>
-          <span className="text-sm font-semibold text-[var(--black-custom)]">
-            25%
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-yellow-400"></span>
-            <span className="text-sm text-gray-500">E-Wallet</span>
-          </div>
-          <span className="text-sm font-semibold text-[var(--black-custom)]">
-            15%
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
-export default async function DashboardPage() {
-  const orderHistory = await fetchTransactionsForDashboard();
+      <div className="text-3xl font-bold text-[var(--black-custom)] mb-6">
+        {formatRupiah(totalAmount)}
+      </div>
+
+      <div className="flex items-center justify-center gap-6">
+        <div
+          className="relative w-40 h-40 rounded-full flex-shrink-0 transition-all duration-500"
+          style={{
+            background: `conic-gradient(
+              #EF4444 0% ${cashEnd}%, 
+              #3B82F6 ${cashEnd}% ${bankEnd}%, 
+              #FACC15 ${bankEnd}% 100%
+            )`,
+          }}
+        >
+          <div className="absolute inset-3 bg-white rounded-full shadow-inner"></div>
+        </div>
+
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-red-500"></span>
+              <span className="text-sm text-gray-500">Cash</span>
+            </div>
+            <span className="text-sm font-bold text-[var(--black-custom)]">
+              {data.cash.toFixed(1)}%
+            </span>
+          </div>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-blue-500"></span>
+              <span className="text-sm text-gray-500">Card</span>
+            </div>
+            <span className="text-sm font-bold text-[var(--black-custom)]">
+              {data.bank.toFixed(1)}%
+            </span>
+          </div>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-yellow-400"></span>
+              <span className="text-sm text-gray-500">E-Wallet</span>
+            </div>
+            <span className="text-sm font-bold text-[var(--black-custom)]">
+              {data.ewallet.toFixed(1)}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- 4. MAIN COMPONENT ---
+export default function DashboardPage() {
+  const [orderHistory, setOrderHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [message, setMessage] = useState(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const formatRupiah = (number) => {
     if (isNaN(number)) return "Rp. 0";
@@ -137,52 +160,170 @@ export default async function DashboardPage() {
   const formatTanggal = (dateString) => {
     try {
       return new Date(dateString).toLocaleString("id-ID", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit",
       });
-    } catch (e) {
-      return dateString;
+    } catch (e) { return dateString; }
+  };
+
+  useEffect(() => {
+    async function getOrderHistory() {
+      setIsLoading(true);
+      try {
+        const data = await fetchTransactionsForDashboard();
+        setOrderHistory(data || []);
+
+        if (data && data.length > 0) {
+          const today = new Date();
+          const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+          // Format YYYY-MM-DD untuk input
+          setStartDate(firstDay.toLocaleDateString('en-CA'));
+          setEndDate(today.toLocaleDateString('en-CA'));
+        }
+      } catch (error) {
+        console.error("Gagal mengambil riwayat pesanan:", error);
+        setOrderHistory([]);
+        setMessage({ type: "error", text: "Gagal memuat riwayat pesanan." });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    getOrderHistory();
+  }, []);
+
+  const { filteredData, stats, monthlyData, sourceData } = useMemo(() => {
+    let filtered = orderHistory;
+
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+
+      filtered = orderHistory.filter((item) => {
+        const itemDate = new Date(item.date);
+        return itemDate >= start && itemDate <= end;
+      });
+    }
+
+    const totalSale = filtered.reduce((sum, item) => sum + Number(item.amount), 0);
+    const totalItems = filtered.reduce((sum, item) => sum + Number(item.qty), 0);
+    const uniqueTransactions = new Set(filtered.map(item => item.id)).size;
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthlyCounts = Array(12).fill(0);
+
+    const targetYear = endDate ? new Date(endDate).getFullYear() : new Date().getFullYear();
+
+    filtered.forEach(item => {
+      const d = new Date(item.date);
+      if (d.getFullYear() === targetYear) {
+        monthlyCounts[d.getMonth()] += Number(item.amount);
+      }
+    });
+    const monthlyStats = months.map((m, i) => ({ month: m, total: monthlyCounts[i] }));
+
+    let cash = 0, bank = 0, ewallet = 0;
+    filtered.forEach(item => {
+      const method = item.sales ? item.sales.toLowerCase() : "";
+      if (method.includes("cash")) cash += Number(item.amount);
+      else if (method.includes("bank") || method.includes("card")) bank += Number(item.amount);
+      else ewallet += Number(item.amount);
+    });
+
+    const totalForPie = cash + bank + ewallet || 1;
+    const pieStats = {
+      cash: (cash / totalForPie) * 100,
+      bank: (bank / totalForPie) * 100,
+      ewallet: (ewallet / totalForPie) * 100
+    };
+
+    return {
+      filteredData: filtered,
+      stats: { totalSale, totalItems, uniqueTransactions },
+      monthlyData: monthlyStats,
+      sourceData: pieStats
+    };
+  }, [orderHistory, startDate, endDate]);
+
+  const handleExportPDF = () => {
+    if (filteredData.length === 0) {
+      setMessage({ type: "error", text: "Tidak ada data untuk diekspor." });
+      setTimeout(() => setMessage(null), 3000);
+      return;
+    }
+
+    const tableRows = filteredData.map((order) => `
+        <tr>
+          <td>#${order.id}</td>
+          <td>${order.name}</td>
+          <td>${order.qty}</td>
+          <td>${formatRupiah(order.amount)}</td>
+          <td>${order.sales}</td>
+          <td>${formatTanggal(order.date)}</td>
+        </tr>`
+    ).join("");
+
+    const printContent = `
+      <html>
+        <head><title>Riwayat Pesanan</title>
+        <style>
+            body { font-family: sans-serif; padding: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+            th { background-color: #f2f2f2; }
+        </style></head>
+        <body>
+          <h2 style="text-align:center">Laporan Riwayat Pesanan</h2>
+          <p>Periode: ${startDate} s/d ${endDate}</p>
+          <table>
+            <thead><tr><th>ID</th><th>Item</th><th>Qty</th><th>Amount</th><th>Method</th><th>Date</th></tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+        </body>
+      </html>`;
+
+    const printWindow = window.open("", "", "height=600,width=800");
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 500);
     }
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+      {message && (
+        <div className={`fixed top-24 right-6 z-50 p-4 rounded-lg shadow-lg ${message.type === "success" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>
+          {message.text}
+          <button onClick={() => setMessage(null)} className="ml-4 font-bold">X</button>
+        </div>
+      )}
+
       <div className="flex gap-4 mb-6">
         <div className="flex-1">
-          <label
-            htmlFor="start-date"
-            className="block text-sm font-medium text-[var(--black-custom)] mb-1"
-          >
-            Start Date
-          </label>
+          <label className="block text-sm font-medium text-[var(--black-custom)] mb-1">Start Date</label>
           <div className="relative">
             <input
-              type="text"
-              id="start-date"
-              placeholder="mm/dd/yyyy"
-              className="w-full p-2.5 border border-gray-200 rounded-lg bg-white pl-10"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full p-3 border border-gray-200 rounded-lg bg-white outline-none focus:border-[var(--primary-custom)] transition-colors"
             />
-            <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
         </div>
         <div className="flex-1">
-          <label
-            htmlFor="end-date"
-            className="block text-sm font-medium text-[var(--black-custom)] mb-1"
-          >
-            End Date
-          </label>
+          <label className="block text-sm font-medium text-[var(--black-custom)] mb-1">End Date</label>
           <div className="relative">
             <input
-              type="text"
-              id="end-date"
-              placeholder="mm/dd/yyyy"
-              className="w-full p-2.5 border border-gray-200 rounded-lg bg-white pl-10"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full p-3 border border-gray-200 rounded-lg bg-white outline-none focus:border-[var(--primary-custom)] transition-colors"
             />
-            <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
         </div>
       </div>
@@ -190,46 +331,38 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <StatCard
           title="Total Sale"
-          value="Rp. 230.000"
-          percentage={5.25}
-          icon={<DollarSign className="h-6 w-6 text-yellow-500" />}
+          value={formatRupiah(stats.totalSale)}
+          icon={<DollarSign className="h-6 w-6 text-yellow-600" />}
           iconBg="bg-yellow-100"
         />
         <StatCard
           title="Total Transaction"
-          value="35"
-          percentage={2.8}
-          icon={
-            <ClipboardList className="h-6 w-6 text-[var(--primary-custom)]" />
-          }
+          value={stats.uniqueTransactions}
+          icon={<ClipboardList className="h-6 w-6 text-[var(--primary-custom)]" />}
           iconBg="bg-[var(--primary-custom)]/20"
         />
         <StatCard
-          title="Total Items"
-          value="88"
-          percentage={100}
-          icon={<Package className="h-6 w-6 text-[var(--blue-custom)]" />}
-          iconBg="bg-[var(--blue-custom)]/20"
+          title="Total Items Sold"
+          value={stats.totalItems}
+          icon={<Package className="h-6 w-6 text-blue-500" />}
+          iconBg="bg-blue-100"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
-          <MonthlySalesChart />
+          <MonthlySalesChart data={monthlyData} />
         </div>
         <div className="lg:col-span-1">
-          <SalesSourceChart />
+          <SalesSourceChart data={sourceData} totalAmount={stats.totalSale} />
         </div>
       </div>
 
       <div className="bg-white p-5 rounded-xl shadow-sm">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-[var(--black-custom)]">
-            Order History
-          </h2>
-          <button className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-custom)] text-white rounded-lg hover:opacity-90">
-            <Download className="h-4 w-4" />
-            Export as PDF
+          <h2 className="text-xl font-semibold text-[var(--black-custom)]">Order History</h2>
+          <button onClick={handleExportPDF} className="flex items-center gap-2 px-4 py-2 bg-[var(--primary-custom)] text-white rounded-lg hover:opacity-90 transition-opacity">
+            <Download className="h-4 w-4" /> Print / Save as PDF
           </button>
         </div>
         <div className="overflow-x-auto">
@@ -238,48 +371,32 @@ export default async function DashboardPage() {
               <tr className="border-b bg-gray-50 text-gray-600 uppercase text-sm">
                 <th className="py-3 px-4">ID Order</th>
                 <th className="py-3 px-4">Items Name</th>
-                <th className="py-3 px-4">Quantity</th>
+                <th className="py-3 px-4">Qty</th>
                 <th className="py-3 px-4">Amount</th>
                 <th className="py-3 px-4">Sales</th>
                 <th className="py-3 px-4">Date</th>
               </tr>
             </thead>
             <tbody className="text-[var(--black-custom)]">
-              {orderHistory.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="text-center py-10 text-gray-500"
-                  >
-                    Belum ada riwayat transaksi.
-                  </td>
-                </tr>
+              {isLoading ? (
+                <tr><td colSpan="6" className="text-center py-10 text-gray-500"><Loader2 className="h-6 w-6 animate-spin mx-auto" />Memuat data...</td></tr>
+              ) : filteredData.length === 0 ? (
+                <tr><td colSpan="6" className="text-center py-10 text-gray-500">Tidak ada data pada rentang tanggal ini.</td></tr>
               ) : (
-                orderHistory.map((order) => (
-                  <tr
-                    key={`${order.id}-${order.name}`}
-                    className="border-b border-gray-200 hover:bg-gray-50"
-                  >
+                filteredData.map((order, index) => (
+                  <tr key={`${order.id}-${order.name}-${index}`} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-4 font-medium">#{order.id}</td>
                     <td className="py-3 px-4">{order.name}</td>
                     <td className="py-3 px-4">{order.qty}</td>
                     <td className="py-3 px-4">{formatRupiah(order.amount)}</td>
                     <td className="py-3 px-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.sales.toUpperCase() === "E-Wallet"
-                            ? "bg-[var(--blue-custom)]/20 text-[var(--blue-custom)]"
-                            : order.sales.toUpperCase() === "Cash"
-                            ? "bg-[var(--primary-custom)]/20 text-[var(--primary-custom)]"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${order.sales?.toUpperCase().includes("E-WALLET") ? "bg-blue-100 text-blue-600" :
+                        order.sales?.toUpperCase().includes("CASH") ? "bg-[var(--primary-custom)]/20 text-[var(--primary-custom)]" : "bg-yellow-100 text-yellow-700"
+                        }`}>
                         {order.sales}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-500">
-                      {formatTanggal(order.date)}
-                    </td>
+                    <td className="py-3 px-4 text-sm text-gray-500">{formatTanggal(order.date)}</td>
                   </tr>
                 ))
               )}

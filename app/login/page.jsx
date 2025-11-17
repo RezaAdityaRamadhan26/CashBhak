@@ -1,4 +1,4 @@
-import { GalleryVerticalEnd } from "lucide-react" 
+import { GalleryVerticalEnd } from "lucide-react"
 import { LoginForm } from "@/components/login-form"
 import Image from "next/image"
 import Link from "next/link"
@@ -11,7 +11,7 @@ export default function LoginPage() {
           <a href="#" className="flex items-center gap-2 font-medium">
             <div
               className="text-primary-foreground flex items-center justify-center">
-                <Image src="/images/logo.png" alt="Logo" width={40} height={40} />
+              <Image src="/images/logo.png" alt="Logo" width={40} height={40} />
             </div>
             CashBhak Inc.
           </a>
@@ -27,8 +27,8 @@ export default function LoginPage() {
       </div>
       <div className="bg-[var(--primary-custom)] flex flex-col justify-center items-center">
         <div className="text-left ">
-        <h1 className="text-3xl font-bold text-white">Manage Your Sales Easily With us.</h1>
-        <h3 className="text-lg text-white ">Continue To manage your business on nama</h3>
+          <h1 className="text-3xl font-bold text-white">Manage Your Sales Easily With us.</h1>
+          <h3 className="text-lg text-white ">Continue To manage your business on nama</h3>
         </div>
         <img src="/images/finance.png" alt="Finance Illustration" className="h-[500px] w-[500px] object-cover dark:brightness-[0.2] dark:grayscale" />
       </div>

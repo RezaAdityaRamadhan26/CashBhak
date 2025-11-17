@@ -14,27 +14,27 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 
-export function LoginForm   ({
+export function LoginForm({
   className,
   ...props
 }) {
 
   async function handleLogin(formData) {
-        const response = await signIn("credentials",{
-            redirect: false,
-            email: formData.get("email"),
-            password: formData.get("password"),
-        })
+    const response = await signIn("credentials", {
+      redirect: false,
+      email: formData.get("email"),
+      password: formData.get("password"),
+    })
 
-        if (!response.ok) {
-            alert('gagal login')
-            return null
-        }
-
-        alert('Success!')
-        redirect("/dashboard")
+    if (!response.ok) {
+      alert('gagal login')
+      return null
     }
-    
+
+    alert('Success!')
+    redirect("/dashboard")
+  }
+
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props} action={handleLogin}>
       <FieldGroup>

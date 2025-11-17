@@ -8,16 +8,13 @@ import { EmailEdit } from '@/components/EmailEdit';
 import { fetchUserData } from '@/lib/action';
 import { AvatarEdit } from '@/components/AvatarEdit';
 
-// Data dummy untuk tabel
 const subscriptionHistory = [
-  { id: 1, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/Januari/2025', end: '1/Juni/2025', payment: 'Sudah Dibayar', status: 'Aktif' },
-  { id: 2, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/Januari/2025', end: '1/Juni/2025', payment: 'Sudah Dibayar', status: 'Nonaktif' },
-  { id: 3, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/Januari/2025', end: '1/Juni/2025', payment: 'Sudah Dibayar', status: 'Nonaktif' },
-  { id: 4, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/Januari/2025', end: '1/Juni/2025', payment: 'Sudah Dibayar', status: 'Nonaktif' },
-  { id: 5, plan: 'Paket Trial 3 Bulan', price: 'Gratis', start: '1/Januari/2025', end: '1/Maret/2025', payment: 'Sudah Dibayar', status: 'Nonaktif' },
+  { id: 5, plan: 'Paket Trial 3 Bulan', price: 'Gratis', start: '1/Januari/2024', end: '1/April/2024', payment: 'Sudah Dibayar', status: 'Nonaktif' },
+  { id: 4, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/April/2024', end: '1/Oktober/2024', payment: 'Sudah Dibayar', status: 'Nonaktif' },
+  { id: 3, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/Oktober/2024', end: '1/April/2025', payment: 'Sudah Dibayar', status: 'Nonaktif' },
+  { id: 2, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/April/2025', end: '1/Oktober/2025', payment: 'Sudah Dibayar', status: 'Nonaktif' },
+  { id: 1, plan: 'Paket 6 Bulan', price: 'Rp. 600.000', start: '1/Oktober/2025', end: '1/April/2026', payment: 'Sudah Dibayar', status: 'Aktif' },
 ];
-
-// Komponen untuk input read-only
 
 
 // Komponen untuk status badge
@@ -38,26 +35,24 @@ const StatusBadge = ({ text, type }) => {
 
 export default async function ProfilePage() {
 
-    const userData = await fetchUserData();
+  const userData = await fetchUserData();
   return (
     <div className="w-full space-y-6">
-      
+
       {/* Kartu Profil */}
       <div className="bg-white p-6 sm:p-8 rounded-xl shadow-sm">
         <h2 className="text-2xl font-semibold text-[var(--black-custom)] mb-6">
           Profile
         </h2>
-        
+
         <div className="flex flex-col md:flex-row gap-8">
           {/* Kiri: Info Akun */}
           <div className="flex-1 space-y-6">
             <div className="flex items-center gap-4">
-              <Image 
+              <img
                 src={userData.profile_image || "/images/profile.png"} // Pastikan path ini benar
-                alt="User Avatar" 
-                width={80} 
-                height={80} 
-                className="rounded-full object-cover"
+                alt="User Avatar"
+                className="rounded-full object-cover w-20 h-20"
               />
               <AvatarEdit></AvatarEdit>
             </div>
@@ -72,16 +67,16 @@ export default async function ProfilePage() {
               </div>
               <div className='flex gap-5'>
                 <Input label="Email" value={userData.email} readOnly />
-               <EmailEdit></EmailEdit>   
+                <EmailEdit></EmailEdit>
               </div>
               <div className='flex gap-5'>
                 <Input label="Password" value="**********" type="password" readOnly />
-                
+
                 <PwEdit></PwEdit>
               </div>
             </form>
           </div>
-          
+
           {/* Kanan: Ilustrasi (Opsional) */}
           <div className="flex-1 items-center justify-center hidden lg:flex">
             <Image src="/images/image-profile.png" alt="Illustration" width={200} height={100} className="rounded-lg object-cover" />
@@ -117,9 +112,9 @@ export default async function ProfilePage() {
                     <StatusBadge text={item.payment} type="paid" />
                   </td>
                   <td className="py-3 px-4">
-                    <StatusBadge 
-                      text={item.status} 
-                      type={item.status === 'Aktif' ? 'active' : 'inactive'} 
+                    <StatusBadge
+                      text={item.status}
+                      type={item.status === 'Aktif' ? 'active' : 'inactive'}
                     />
                   </td>
                 </tr>
