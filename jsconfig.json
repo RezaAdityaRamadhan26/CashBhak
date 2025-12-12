@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/components/*": [
-        "components/*",
-        "components/main/*" // tambahkan supaya import '@/components/TopBar' bisa resolve ke components/main/TopBar.jsx
-      ]
+      // Baris ini sangat PENTING!
+      // Ia memberitahu Next.js bahwa '@/*' adalah alias untuk folder di akar proyek ('./*').
+      "@/*": ["./*"] 
     }
-  }
+  },
+  "include": ["**/*.js", "**/*.jsx"]
 }

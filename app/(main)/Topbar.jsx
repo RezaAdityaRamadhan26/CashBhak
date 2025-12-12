@@ -22,4 +22,3 @@ export default async function Topbar() {
 
 }
 
-export { default } from './topbar.jsx';

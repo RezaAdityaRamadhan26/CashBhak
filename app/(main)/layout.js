@@ -1,5 +1,5 @@
 import Sidebar from "./Sidebar";
-import TopBar from "./topbar";
+import TopBar from "./TopBar.jsx";
 
 export default function MainLayout({ children }) {
   return (
