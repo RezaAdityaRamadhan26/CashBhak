@@ -20,3 +20,6 @@ Sebuah Web yang berfungsi sebagai kasir, Web ini bisa menyimpan dan mendata prod
 1. Galih Rakhasiwi Putra Kanaya
 2. M. Reza Aditya Ramadhan
 3. Randu tapi kerja dikit doang jrit
+
+Link Website Deploy :
+https://cashbhak.vercel.app/
