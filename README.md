@@ -17,9 +17,11 @@ Sebuah Web yang berfungsi sebagai kasir, Web ini bisa menyimpan dan mendata prod
 - Profile
 
 ### Anggota Pengerjaan :
-1. Galih Rakhasiwi Putra Kanaya
-2. M. Reza Aditya Ramadhan
-3. Randu tapi kerja dikit doang jrit
+1. Muhamad Fakhri
+2. Adam Wibowo
+3. Davin Bani Arista
+4. Muhammad Reza Aditya Ramadhan
+5. Padly Padillah
 
 Link Website Deploy :
 https://cashbhak.vercel.app/
