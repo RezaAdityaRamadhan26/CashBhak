@@ -254,7 +254,6 @@ export default function LandingPage() {
             Join thousands of merchants who have trusted KasirPro to manage
             their business.
           </p>
-          {/* --- DAN DI SINI --- */}
           <Link href="/signup">
             <Button
               className="mt-6 bg-[var(--light-custom)] text-[var(--primary-custom)] font-semibold py-3 px-6 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-[var(--primary-custom)] hover:to-[var(--blue-custom)] hover:text-[var(--light-custom)] cursor-pointer"
